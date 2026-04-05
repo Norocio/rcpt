@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transaction Receipt — Success · Norocio</title>
+    <style>
+      @font-face {
+        font-family: "Inter";
+        font-style: normal;
+        font-weight: 400 700;
+        font-display: swap;
+        src: url("./fonts/Inter-1.woff2") format("woff2");
+      }
+
+      @page {
+        size: A4;
+        margin: 0;
+      }
+
+      body {
+        background-color: #f3f4f6;
+        font-family: "Inter", sans-serif;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .receipt-card {
+        background-color: #fff;
+        width: 210mm;
+        min-height: 297mm;
+        padding: 40px 50px;
+        box-sizing: border-box;
+        position: relative;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Tiled watermark background */
+      .receipt-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22320%22%20height%3D%22200%22%20viewBox%3D%220%200%20320%20200%22%3E%3Cg%20transform%3D%22translate(160%2C100)%20rotate(-28)%22%3E%3Ctext%20x%3D%22-142%22%20y%3D%22-6%22%20fill%3D%22%23000%22%20fill-opacity%3D%220.16%22%20font-family%3D%22Inter%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2224%22%20font-weight%3D%22700%22%20letter-spacing%3D%221.5%22%3ENorocio.com%3C%2Ftext%3E%3Ctext%20x%3D%22-95%22%20y%3D%2252%22%20fill%3D%22%23000%22%20fill-opacity%3D%220.16%22%20font-family%3D%22Inter%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2224%22%20font-weight%3D%22700%22%20letter-spacing%3D%221.5%22%3ENorocio.com%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+        background-repeat: repeat;
+        background-size: 320px 200px;
+        opacity: 0.3;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .content {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Top Header */
+      .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+
+      .logo-section {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .norocio-icon {
+        width: 180px;
+        /* height: 48px; */
+        /* border-radius: 10px; */
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .norocio-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .company-info {
+        font-size: 13px;
+        color: #333;
+        line-height: 1.4;
+        font-weight: 500;
+      }
+
+      .qr-section {
+        text-align: center;
+      }
+
+      .qr-box {
+        width: 85px;
+        height: 85px;
+        border: 1px solid #e5e7eb;
+        padding: 4px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+
+      .qr-box img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: contain;
+      }
+
+      .scan-text {
+        font-size: 11px;
+        font-weight: 600;
+        color: #333;
+        margin-top: 4px;
+      }
+
+      hr {
+        border: none;
+        border-top: 1px solid #eee;
+        margin: 20px 0;
+      }
+
+      /* Data Sections */
+      .section-label {
+        font-size: 12px;
+        font-weight: 700;
+        color: #888;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+        letter-spacing: 0.02em;
+      }
+
+      .section-value {
+        font-size: 16px;
+        color: #222;
+        font-weight: 500;
+      }
+
+      .kv {
+        display: grid;
+        grid-template-columns: minmax(160px, 200px) 1fr;
+        column-gap: 14px;
+        row-gap: 10px;
+        margin-top: 10px;
+      }
+
+      .kv-key {
+        font-size: 14px;
+        color: #444;
+        font-weight: 700;
+      }
+
+      .kv-value {
+        font-size: 14px;
+        color: #222;
+        font-weight: 500;
+      }
+
+      .flex-row {
+        display: flex;
+        gap: 60px;
+        margin-bottom: 25px;
+      }
+
+      .amount-text {
+        font-size: 38px;
+        font-weight: 700;
+        color: #000;
+        margin-top: 4px;
+      }
+
+      .detail-block {
+        margin-bottom: 12px;
+      }
+
+      .detail-block strong {
+        font-weight: 700;
+        color: #111;
+        margin-right: 4px;
+      }
+
+      .delivery-text {
+        font-size: 13px;
+        color: #4b5563;
+        line-height: 1.6;
+      }
+
+      .orange-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        color: #f97316;
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+
+      .orange-note .bolt {
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+
+      .footer-text {
+        font-size: 12px;
+        color: #4b5563;
+        line-height: 1.5;
+        margin-top: 20px;
+      }
+
+      .footer-text a {
+        color: #2563eb;
+        text-decoration: underline;
+      }
+
+      .footer-text a:visited {
+        color: #1d4ed8;
+      }
+
+      .amount-box {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid #660000;
+        }
+
+      .status-badge {
+        display: inline-block;
+        margin-top: 4px;
+        padding: 6px 12px;
+        border-radius: 40px;
+        font-size: 14px;
+        font-weight: 600;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .status-badge.status-success {
+        background-color: #d1fae5;
+        color: #047857;
+        border: 1px solid #6ee7b7;
+      }
+
+      @media print {
+        body {
+          background: #fff;
+          padding: 0;
+        }
+        .receipt-card {
+          box-shadow: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="receipt-card">
+      <div class="content">
+        <!-- Header -->
+        <div class="header-container">
+          <div class="logo-section">
+            <div class="norocio-icon">
+              <img
+                src="https://github.com/Norocio/rcpt/blob/main/norocio-logo.png?raw=true"
+                alt="Norocio logo"
+              />
+            </div>
+          </div>
+          <div class="qr-section">
+            <div class="qr-box">
+              <img src="https://github.com/Norocio/rcpt/blob/main/qrcode-norocio.png?raw=true" alt="Scan to verify" />
+            </div>
+            <div class="scan-text">Scan to verify</div>
+          </div>
+        </div>
+
+        <hr />
+
+        <div class="flex-row">
+          <div style="width: 200px">
+            <div class="section-label">Date:</div>
+            <div class="section-value">24-06-2025 10:45:AM</div>
+          </div>
+          <div style="min-width: 0; flex: 1">
+            <div class="section-label">Transaction ID:</div>
+            <div class="section-value" style="word-break: break-all">
+              8f2b7c1a-5d9e-4a6c-b321-7e9f4e2b1a0d
+            </div>
+          </div>
+        </div>
+
+        <div class="flex-row">
+          <div style="width: 200px; flex-shrink: 0">
+            <div class="section-label">Status:</div>
+            <div class="section-value status-badge status-success">Success</div>
+          </div>
+          <div style="min-width: 0; flex: 1">
+            <div class="section-label">Tracking Reference:</div>
+            <div class="section-value" style="font-family: monospace; font-size: 14px; word-break: break-all">
+              UETR: 8f3a2c1e-5b4d-4a7f-9c2e-1d3a5b7c9e0f
+            </div>
+          </div>
+        </div>
+
+        <div class="section amount-box" style="margin-bottom: 25px">
+          <div class="section-label">Amount paid:</div>
+          <div class="amount-text">$450,720.00</div>
+        </div>
+
+        <hr />
+
+        <div class="section">
+          <div class="section-label">Payment details</div>
+          <div class="kv">
+            <div class="kv-key">Payment Method</div>
+            <div class="kv-value">Wire Transfer (SWIFT)</div>
+
+            <div class="kv-key">Sender</div>
+            <div class="kv-value">NOROCIO LIMITED</div>
+
+            <div class="kv-key">Beneficiary Name</div>
+            <div class="kv-value">ZATALINA LIMITED</div>
+
+            <div class="kv-key">Beneficiary Bank</div>
+            <div class="kv-value">BANK OF COMMUNICATIONS, SHANGHAI BRANCH</div>
+
+            <div class="kv-key">Beneficiary Account</div>
+            <div class="kv-value">622208140400012345</div>
+
+            <div class="kv-key">Beneficiary Address</div>
+            <div class="kv-value">
+              NO. 188 YINCHENG MIDDLE ROAD, PUDONG NEW DISTRICT, SHANGHAI, CN.
+            </div>
+
+            <div class="kv-key">Narration</div>
+            <div class="kv-value">Settlement for electronic components shipment - INV-2025-089</div>
+          </div>
+        </div>
+
+        <hr />
+
+        <div class="orange-note">
+          <svg
+            class="bolt"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path d="M11 21l-1-9H6l6-12h2l1 9h4l-6 12h-2z" fill="#f97316" />
+          </svg>
+          <span>Beneficiary bank can track this payment with the tracking reference(s):</span>
+        </div>
+
+        <hr />
+
+        <div class="footer-text">
+          Transaction processed by Norocio. For questions, please message us at
+          <a href="mailto:support@norocio.com">support@norocio.com</a>. Norocio helps businesses send money abroad.
+          <a href="https://norocio.com">https://norocio.com</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
