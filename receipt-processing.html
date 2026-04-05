@@ -196,20 +196,28 @@
         line-height: 1.6;
       }
 
-      .orange-note {
+      .processing-copy-notice {
         display: flex;
-        align-items: flex-start;
-        gap: 8px;
-        color: #f97316;
-        font-size: 13px;
-        font-weight: 600;
-        margin-top: 20px;
-        margin-bottom: 20px;
+        align-items: center;
+        gap: 12px;
+        padding: 5px 0;
+        margin: 0;
       }
 
-      .orange-note .bolt {
+      .processing-copy-notice .warning-icon {
         flex-shrink: 0;
-        margin-top: 1px;
+        width: 22px;
+        height: 20px;
+        display: block;
+      }
+
+      .processing-copy-notice p {
+        margin: 0;
+        font-size: 13px;
+        font-weight: 700;
+        color: #000;
+        line-height: 1.5;
+        text-align: left;
       }
 
       .footer-text {
@@ -350,18 +358,26 @@
 
         <hr />
 
-        <div class="orange-note">
+        <div class="processing-copy-notice" role="status">
           <svg
-            class="bolt"
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
+            class="warning-icon"
+            viewBox="0 0 24 22"
             xmlns="http://www.w3.org/2000/svg"
             aria-hidden="true"
           >
-            <path d="M11 21l-1-9H6l6-12h2l1 9h4l-6 12h-2z" fill="#f97316" />
+            <path d="M12 1.5L22.5 20.5H1.5L12 1.5z" fill="#f97316" />
+            <path
+              d="M12 7v6.5"
+              stroke="#fff"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <circle cx="12" cy="17" r="1.25" fill="#fff" />
           </svg>
-          <span>Beneficiary bank can track this payment with the tracking reference(s):</span>
+          <p>
+            This is a Processing Copy. The funds are in-flight and have not yet been settled with the
+            beneficiary bank. A final receipt will be available upon successful settlement.
+          </p>
         </div>
 
         <hr />
